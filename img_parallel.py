@@ -1,0 +1,45 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jul  6 18:43:47 2022
+
+@author: uqhverma
+"""
+
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize_scalar
+from color_opt import color_opt
+from qiskit.visualization import plot_bloch_vector
+from qiskit.providers.aer import AerSimulator
+from qiskit.providers.aer.noise import pauli_error
+from qiskit.providers.aer.noise import NoiseModel
+from PIL import Image
+import itertools
+from multiprocessing import Pool
+import time
+#from mini_img import mini
+from mini_1 import mini_1
+
+im = Image.open("img_100.png")
+rgb_im = im.convert('RGB')
+
+#cord should be coordinate tuple
+
+if __name__=="__main__":
+    #pixels span
+    rage = im.size
+    spann =  list(itertools.product(range(rage[0]),range(rage[1])))
+    p = Pool(20)
+    t0 = time.time()
+    res4 = p.map(mini_1, spann)
+    print(time.time()-t0)
+    #empty image
+    final = [[] for bt in range(rage[0])]
+    for nt in range(rage[0]):   
+        for mt in range(nt*rage[1],(nt+1)*rage[1]):
+                final[nt].append(res4[mt])
+        
+    pic = np.array(final, dtype=np.uint8)
+    # Use PIL to create an image from the new array of pixels
+    new_image = Image.fromarray(pic)
+
